@@ -109,7 +109,7 @@ def get_global_stats():
     )
 
 
-def get_most_played():
+def get_most_played(n):
     df = __history()
 
     title_type = "full_title"
@@ -119,11 +119,11 @@ def get_most_played():
     df_top['rating_key'] = df.groupby(title_type)['rating_key'].first().values
     df_top = df_top.sort_values('counts', ascending=False)
 
-    top_five = ""
+    top = ""
 
-    for i in range(5):
-        top_five += (f"**{df_top.iloc[i]['counts']}** plays of "
-                     f"**{df_top.iloc[i][title_type]}** by "
-                     f"**{df_top.iloc[i]['grandparent_title']}**\n")
+    for i in range(n):
+        top += (f"**{df_top.iloc[i]['counts']}** plays of "
+                f"**{df_top.iloc[i][title_type]}** by "
+                f"**{df_top.iloc[i]['grandparent_title']}**\n")
 
-    return f"\n{top_five}\n"
+    return f"\n{top}\n"

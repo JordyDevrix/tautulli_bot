@@ -1,3 +1,4 @@
 tautulli_analyse/
 __pycache__/
 .idea/
+.env
