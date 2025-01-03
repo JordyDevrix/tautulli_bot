@@ -27,6 +27,12 @@ def run_discord_bot():
         data = st.get_most_played_artist(n)
         await msg.edit(content=f"{ctx.author.mention} Your top {n} artists are {data}")
 
+    @bot.hybrid_command(name="get_history_chart", description="Get my history chart")
+    async def get_history_chart(ctx: commands.Context, n: int = 7):
+        file = st.get_history_plot(n)
+        await ctx.send(file=discord.File(file))
+        os.remove(file)
+
     @bot.event
     async def on_ready():
         await bot.tree.sync()
