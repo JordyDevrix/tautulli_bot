@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import requests
 import pandas as pd
 import matplotlib.dates as mdates
+import matplotlib as mpl
 
 tautulli_token = os.getenv("TAUTULLI_TOKEN")
 
@@ -164,45 +165,41 @@ def get_history_plot(n):
     df_plays_per_day['counts'] = df_plays_per_day['counts'].fillna(0).astype(int)
 
     n_days = df_plays_per_day.nlargest(n, 'date')
+    frequency: str
 
-    # Set the style ggplot
-    plt.style.use('ggplot')
+    # Make style dark
+    plt.style.use('dark_background')
+    mpl.rcParams['axes.spines.left'] = False
+    mpl.rcParams['axes.spines.right'] = False
+    mpl.rcParams['axes.spines.top'] = False
+    mpl.rcParams['axes.spines.bottom'] = False
 
-    # Change to dark mode
-    fig, ax = plt.subplots(figsize=(16, 9))
-
-    # backgrounds
-    fig.patch.set_facecolor('gray')  # Dark background for the figure
-    ax.set_facecolor('#2e2e2e')  # Dark background for the plot
-
-    # grid
-    ax.spines['bottom'].set_color('gray')
-    ax.spines['top'].set_color('gray')
-    ax.spines['right'].set_color('gray')
-    ax.spines['left'].set_color('gray')
-    ax.grid(color='gray')
-
-    # Labels and axis
-    ax.tick_params(axis='x', colors='black')
-    ax.tick_params(axis='y', colors='black')
-    ax.title.set_color('black')
-    ax.yaxis.label.set_color('black')
-    ax.xaxis.label.set_color('black')
-
-    # Plot bar colors
-    ax.bar(n_days['date'], n_days['counts'], color=(0.12, 0.72, 0.34))
-    ax.set_title(f"History of the last {n} days")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Number of plays")
-
-    if n < 25:
-        ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-    elif n < 62:
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
+    plt.figure(figsize=(21, 9))
+    if n < 33:
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator())
+        frequency = 'day'
+    elif n < 200:
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator())
+        n_days = n_days.groupby(pd.Grouper(key='date', freq='W')).sum().reset_index()
+        frequency = 'week'
     else:
-        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d-%m"))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+        n_days = n_days.groupby(pd.Grouper(key='date', freq='M')).sum().reset_index()
+        frequency = 'month'
 
-    plt.savefig('top_days.png', dpi=300, bbox_inches='tight')
-    return 'top_days.png'
+    plt.plot(n_days['date'], n_days['counts'], marker='o', color=(0.5, 0.55, 0.8))
+
+    plt.title(f'Plays per {frequency}', color=(0.5, 0.55, 0.8))
+    plt.xlabel('Date', color=(0.5, 0.55, 0.8))
+    plt.ylabel('Plays', color=(0.5, 0.55, 0.8))
+
+    # Make all background elements dark
+
+    plt.xticks(rotation=45)
+    plt.grid()
+    plt.savefig('plays_per_day.png', dpi=300, bbox_inches='tight', facecolor=plt.gcf().get_facecolor())
+    return 'plays_per_day.png'
 
