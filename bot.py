@@ -29,8 +29,10 @@ def run_discord_bot():
 
     @bot.hybrid_command(name="get_history_chart", description="Get my history chart")
     async def get_history_chart(ctx: commands.Context, n: int = 7):
+        msg = await ctx.send("Generating chart...")
         file = st.get_history_plot(n)
-        await ctx.send(file=discord.File(file))
+        await msg.channel.send(file=discord.File(file))
+        await msg.delete()
         os.remove(file)
 
     @bot.event
