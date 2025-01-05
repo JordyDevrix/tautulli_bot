@@ -4,7 +4,9 @@ import requests
 import pandas as pd
 import matplotlib.dates as mdates
 import matplotlib as mpl
+from dotenv import load_dotenv
 
+load_dotenv()
 tautulli_token = os.getenv("TAUTULLI_TOKEN")
 
 

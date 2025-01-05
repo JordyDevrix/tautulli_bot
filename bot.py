@@ -2,12 +2,11 @@ import discord
 from discord.ext import commands, tasks
 import statifier as st
 import os
-
+from dotenv import load_dotenv
 
 def run_discord_bot():
-    os.getenv("DISCORD_TOKEN")
+    load_dotenv(dotenv_path=".env")
     token = os.getenv("DISCORD_TOKEN")
-    print(token)
 
     bot = commands.Bot(command_prefix=",", intents=discord.Intents.default())
 
@@ -29,11 +28,13 @@ def run_discord_bot():
 
     @bot.hybrid_command(name="get_history_chart", description="Get my history chart")
     async def get_history_chart(ctx: commands.Context, n: int = 7):
-        msg = await ctx.send("Generating chart...")
-        file = st.get_history_plot(n)
-        await msg.channel.send(file=discord.File(file))
+        # acknoledge the command
+        msg = await ctx.send("fetching history chart...")
+        chart = st.get_history_plot(n)
+        file = discord.File(chart, filename="plays_per_day.png")
+        await ctx.send(content=f"{ctx.author.mention}", file=file)
         await msg.delete()
-        os.remove(file)
+        os.remove("plays_per_day.png")
 
     @bot.event
     async def on_ready():
