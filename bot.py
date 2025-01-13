@@ -12,7 +12,10 @@ def run_discord_bot():
 
     @bot.hybrid_command(name="stats", description="Get my stats")
     async def stats(ctx):
-        await ctx.send(st.get_global_stats())
+        msg = await ctx.send("fetching stats...")
+        statss = st.get_global_stats()
+        await msg.edit(content=f"{ctx.author.mention}\n{statss}")
+
 
     @bot.hybrid_command(name="most_played_songs", description="Get my most played")
     async def most_played_songs(ctx: commands.Context, n: int = 5):
