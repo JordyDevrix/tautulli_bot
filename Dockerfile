@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 80
 
 # Define environment variable
-ENV DISCORD_TOKEN "YOUR_DISCORD_TOKEN"
-ENV TAUTULLI_TOKEN "YOUR_TAUTULLI_TOKEN"
+ENV DISCORD_TOKEN="YOUR_DISCORD_TOKEN"
+ENV TAUTULLI_TOKEN="YOUR_TAUTULLI_TOKEN"
 
 CMD ["python", "main.py"]
