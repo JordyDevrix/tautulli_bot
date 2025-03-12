@@ -26,7 +26,7 @@ def __history():
     base_url = "http://192.168.0.109:8181/api/v2?"
 
     records = True
-    chunk_size = 100
+    chunk_size = 2000
     start = 0
     complete_data = []
 
@@ -94,7 +94,7 @@ def __history():
     return df
 
 
-def get_global_stats():
+async def get_global_stats():
     df = __history()
 
     total_play_duration = df['play_duration'].sum()
@@ -113,7 +113,7 @@ def get_global_stats():
     )
 
 
-def get_most_played(n):
+async def get_most_played(n):
     df = __history()
 
     title_type = "full_title"
@@ -132,7 +132,7 @@ def get_most_played(n):
     return f"\n{top}\n"
 
 
-def get_most_played_artist(n):
+async def get_most_played_artist(n):
     df = __history()
 
     title_type = "grandparent_title"
@@ -150,7 +150,7 @@ def get_most_played_artist(n):
     return f"\n{top}\n"
 
 
-def get_history_plot(n):
+async def get_history_plot(n):
     df = __history()
 
     # Create a dataframe with all dates from the first play to today
